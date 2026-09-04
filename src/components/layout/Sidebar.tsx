@@ -1,64 +1,35 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useMemo } from 'react';
 import { useFileStore } from '../../stores/fileStore';
-import { readDirectory, openFile } from '../../core/ipc/commands';
-import type { FileInfo } from '../../types';
-
+import { extractHeadings } from '../../utils/markdownHeadings';
 export function Sidebar() {
-  const [files, setFiles] = useState<FileInfo[]>([]);
-  const [currentDir, setCurrentDir] = useState<string>('');
-  const openTab = useFileStore((state) => state.openFile);
+  const activeTab = useFileStore((state) => state.tabs.find((tab) => tab.id === state.activeTabId));
+  const headings = useMemo(() => extractHeadings(activeTab?.content ?? ''), [activeTab?.content]);
 
-  const loadDirectory = useCallback(async (dir: string) => {
-    try {
-      const entries = await readDirectory(dir);
-      setFiles(entries);
-      setCurrentDir(dir);
-    } catch (error) {
-      console.error('Failed to read directory:', error);
-    }
-  }, []);
-
-  useEffect(() => {
-    // The sidebar starts empty; a folder picker will be added with workspace support.
-  }, []);
-
-  const handleClick = async (file: FileInfo) => {
-    if (file.isDir) {
-      await loadDirectory(file.path);
-      return;
-    }
-    try {
-      const result = await openFile(file.path);
-      openTab(result.path, result.content, result.encoding);
-    } catch (error) {
-      console.error('Failed to open file:', error);
-    }
+  const jumpToHeading = (line: number) => {
+    window.dispatchEvent(new CustomEvent('freemarkdown:jump-to-line', { detail: { line } }));
   };
 
-  const handleGoUp = () => {
-    const parent = currentDir.split('/').slice(0, -1).join('/') || '/';
-    void loadDirectory(parent);
-  };
-
-  const markdownExtensions = ['.md', '.markdown', '.mkd', '.mdown', '.txt'];
   return (
-    <div className="w-56 flex-shrink-0 bg-[var(--bg-elevated)] border-r border-[var(--border)] flex flex-col">
-      <div className="flex items-center gap-1 px-2 py-1.5 border-b border-[var(--border)]">
-        <button onClick={handleGoUp} className="toolbar-btn" title="Go up" aria-label="Go to parent directory">←</button>
-        <span className="text-xs text-[var(--text-secondary)] truncate flex-1">{currentDir || 'Open a folder to browse files'}</span>
+    <aside className="w-60 flex-shrink-0 bg-[var(--bg-elevated)] border-r border-[var(--border)] flex flex-col" aria-label="Document outline">
+      <div className="px-4 py-3 border-b border-[var(--border)]">
+        <h2 className="text-[13px] font-semibold text-[var(--text-primary)]">文档大纲</h2>
+        <p className="mt-1 text-[12px] text-[var(--text-tertiary)] truncate">{activeTab?.title ?? '未打开文档'}</p>
       </div>
-      <div className="flex-1 overflow-y-auto text-xs">
-        {files.map((file) => {
-          const isMarkdown = markdownExtensions.some((ext) => file.name.toLowerCase().endsWith(ext));
-          return (
-            <button key={file.path} onClick={() => void handleClick(file)} className={`w-full text-left px-3 py-1.5 flex items-center gap-1.5 hover:bg-[var(--bg-hover)] truncate ${isMarkdown ? 'text-[var(--text-primary)]' : 'text-[var(--text-tertiary)]'}`}>
-              <span className="flex-shrink-0">{file.isDir ? '📁' : '📄'}</span>
-              <span className="truncate">{file.name}</span>
-            </button>
-          );
-        })}
-        {files.length === 0 && <div className="px-3 py-2 text-[var(--text-tertiary)]">No folder selected</div>}
-      </div>
-    </div>
+      <nav className="flex-1 overflow-y-auto py-2" aria-label="标题导航">
+        {headings.map((heading) => (
+          <button
+            key={`${heading.line}-${heading.text}`}
+            type="button"
+            onClick={() => jumpToHeading(heading.line)}
+            className="w-full text-left px-3 py-1.5 text-[13px] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)] truncate"
+            style={{ paddingLeft: `${12 + (heading.level - 1) * 12}px` }}
+            title={heading.text}
+          >
+            {heading.text}
+          </button>
+        ))}
+        {headings.length === 0 && <p className="px-4 py-4 text-[12px] text-[var(--text-tertiary)]">当前文档暂无标题</p>}
+      </nav>
+    </aside>
   );
 }

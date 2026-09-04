@@ -1531,6 +1531,8 @@ Application Support/Drafts/（临时草稿）
 
 ### V0.1 Alpha（核心验证）
 
+> Typora 仅作为交互与视觉参考，不以 Typora 级完整 WYSIWYG 作为目标。Mermaid/KaTeX 属于 V0.5；V0.1 的 Mermaid fence 按普通代码块显示。V0.1 侧栏保留基础容器，文档标题大纲为 V0.5，工作区文件树为 V1.0。
+
 **目标：验证编辑器核心能力。**
 
 | 模块 | 功能 |

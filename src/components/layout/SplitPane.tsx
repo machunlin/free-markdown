@@ -17,6 +17,7 @@ export function SplitPane({ left, right, defaultRatio = 0.5, showDivider = true 
     return Number.isFinite(value) ? Math.max(MIN_RATIO, Math.min(MAX_RATIO, value)) : defaultRatio;
   });
   const containerRef = useRef<HTMLDivElement>(null);
+  const ratioRef = useRef(ratio);
 
   const handleMouseDown = useCallback((event: React.MouseEvent) => {
     event.preventDefault();
@@ -27,11 +28,12 @@ export function SplitPane({ left, right, defaultRatio = 0.5, showDivider = true 
       const rect = containerRef.current.getBoundingClientRect();
       const next = Math.max(MIN_RATIO, Math.min(MAX_RATIO, (moveEvent.clientX - rect.left) / rect.width));
       setRatio(next);
-      localStorage.setItem('freemarkdown.splitRatio', String(next));
+      ratioRef.current = next;
     };
     const handleMouseUp = () => {
       document.body.style.cursor = '';
       document.body.style.userSelect = '';
+      localStorage.setItem('freemarkdown.splitRatio', String(ratioRef.current));
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };

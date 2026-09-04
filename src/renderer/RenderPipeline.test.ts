@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { RenderPipeline } from './RenderPipeline';
+import { RenderPipeline, highlightCodeBlocks } from './RenderPipeline';
 
 describe('RenderPipeline', () => {
+  it('highlights yaml and yml code blocks', async () => {
+    const html = new RenderPipeline().render('```yml\nname: FreeMarkdown\n```');
+    const highlighted = await highlightCodeBlocks(html, true);
+    expect(highlighted).toContain('shiki');
+  });
+
   it('renders GFM tables, tasks, and strikethrough', () => {
     const html = new RenderPipeline({ compatibility: 'gfm' }).render('| A |\n| - |\n| B |\n\n- [x] Done\n\n~~old~~');
     expect(html).toContain('<table>');

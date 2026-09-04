@@ -5,7 +5,7 @@ import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { closeBrackets } from '@codemirror/autocomplete';
-import { searchKeymap } from '@codemirror/search';
+import { search, searchKeymap, openSearchPanel, closeSearchPanel } from '@codemirror/search';
 import { scrollSyncExtension } from './extensions/scrollSync';
 import { freeMarkdownKeymap } from './extensions/keymap';
 
@@ -50,6 +50,7 @@ export class EditorCore {
       options.wordWrap === false ? [] : EditorView.lineWrapping,
       placeholder('Start writing…'),
       keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap, indentWithTab]),
+      search(),
       history({ minDepth: 1000 }),
       syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
       closeBrackets(),
@@ -109,6 +110,19 @@ export class EditorCore {
   }
 
   getScrollTop(): number { return this.view.scrollDOM.scrollTop; }
+  getScrollRatio(): number {
+    const max = this.view.scrollDOM.scrollHeight - this.view.scrollDOM.clientHeight;
+    return max > 0 ? Math.max(0, Math.min(1, this.view.scrollDOM.scrollTop / max)) : 0;
+  }
+  setScrollRatio(ratio: number): void {
+    const max = this.view.scrollDOM.scrollHeight - this.view.scrollDOM.clientHeight;
+    this.view.scrollDOM.scrollTop = Math.max(0, Math.min(1, ratio)) * Math.max(0, max);
+  }
+  jumpToLine(line: number): void {
+    const target = this.view.state.doc.line(Math.max(1, Math.min(line + 1, this.view.state.doc.lines)));
+    this.view.dispatch({ selection: { anchor: target.from }, scrollIntoView: true });
+    this.view.focus();
+  }
   setScrollTop(top: number): void { this.view.scrollDOM.scrollTop = top; }
   focus(): void { this.view.focus(); }
   destroy(): void { this.view.destroy(); }
@@ -124,6 +138,9 @@ export class EditorCore {
 
   undo(): boolean { return undo(this.view); }
   redo(): boolean { return redo(this.view); }
+
+  openSearchPanel(): boolean { return openSearchPanel(this.view); }
+  closeSearchPanel(): boolean { return closeSearchPanel(this.view); }
 
   setDark(dark: boolean): void {
     this.view.dispatch({

@@ -122,7 +122,11 @@ FreeMarkdown 是一款面向 macOS 中文技术用户的免费 Markdown 编辑�
 
 ---
 
-## 3. 模块设计
+## 2.1 Version boundaries
+
+Typora is an interaction and visual reference only; FreeMarkdown does not promise Typora-level WYSIWYG parity. V0.1 is source-first with CommonMark/GFM and Shiki. Mermaid and KaTeX are V0.5 extensions loaded on demand. The V0.5 sidebar outline is distinct from the V1.0 workspace file explorer and inline TOC generation.
+
+
 
 ### 3.1 模块依赖图
 

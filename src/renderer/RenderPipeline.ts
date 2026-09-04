@@ -72,7 +72,7 @@ export class RenderPipeline {
 
 let defaultPipeline: RenderPipeline | null = null;
 let highlighterPromise: Promise<Highlighter> | null = null;
-const HIGHLIGHT_LANGUAGES = ['javascript', 'typescript', 'json', 'bash', 'python', 'rust', 'css', 'html', 'markdown'];
+const HIGHLIGHT_LANGUAGES = ['javascript', 'typescript', 'json', 'bash', 'python', 'rust', 'css', 'html', 'markdown', 'yaml'];
 
 async function getCodeHighlighter(): Promise<Highlighter> {
   highlighterPromise ??= createHighlighter({
@@ -90,8 +90,9 @@ export async function highlightCodeBlocks(html: string, dark: boolean): Promise<
   container.querySelectorAll('pre > code').forEach((code) => {
     const pre = code.parentElement;
     if (!pre) return;
-    const language = Array.from(code.classList)
-      .find((name) => name.startsWith('language-'))?.slice('language-'.length) ?? 'text';
+    const languageName = Array.from(code.classList)
+      .find((name) => name.startsWith('language-'))?.slice('language-'.length).toLowerCase() ?? 'text';
+    const language = languageName === 'yml' ? 'yaml' : languageName;
     if (!HIGHLIGHT_LANGUAGES.includes(language)) return;
     const highlighted = highlighter.codeToHtml(code.textContent ?? '', {
       lang: language,
@@ -101,6 +102,7 @@ export async function highlightCodeBlocks(html: string, dark: boolean): Promise<
     highlightedContainer.innerHTML = highlighted;
     const highlightedPre = highlightedContainer.content.firstElementChild;
     if (!highlightedPre) return;
+    highlightedPre.removeAttribute('style');
     highlightedPre.classList.add('markdown-code-block');
     const copyButton = document.createElement('button');
     copyButton.className = 'code-copy-button';

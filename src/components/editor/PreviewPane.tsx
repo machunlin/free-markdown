@@ -1,15 +1,34 @@
 import { useEffect, useRef, useState } from 'react';
 import { useFileStore } from '../../stores/fileStore';
 import { useSettingsStore } from '../../stores/settingsStore';
+import { useThemeStore } from '../../stores/themeStore';
 import { getRenderPipeline, highlightCodeBlocks } from '../../renderer/RenderPipeline';
+
+interface ScrollEventDetail { source: 'editor' | 'preview'; ratio: number; }
+
+const scrollRatio = (element: HTMLElement) => {
+  const max = element.scrollHeight - element.clientHeight;
+  return max > 0 ? Math.max(0, Math.min(1, element.scrollTop / max)) : 0;
+};
 
 export function PreviewPane() {
   const containerRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const renderIdRef = useRef(0);
+  const syncingRef = useRef(false);
   const activeTab = useFileStore((state) => state.tabs.find((tab) => tab.id === state.activeTabId));
   const settings = useSettingsStore((state) => state.settings);
+  const theme = useThemeStore((state) => state.current);
+  const appearance = useThemeStore((state) => state.appearance);
+  const [systemDark, setSystemDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches);
   const [html, setHtml] = useState('<p class="text-[var(--text-tertiary)]">Nothing to preview</p>');
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const onChange = () => setSystemDark(media.matches);
+    media.addEventListener('change', onChange);
+    return () => media.removeEventListener('change', onChange);
+  }, []);
 
   useEffect(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -27,21 +46,54 @@ export function PreviewPane() {
           linkify: settings.markdownLinkify,
           typographer: settings.markdownTypographer,
         }).render(activeTab.content);
-        const highlighted = await highlightCodeBlocks(rawHtml, document.documentElement.classList.contains('dark'));
-        if (renderId === renderIdRef.current) setHtml(highlighted);
+        try {
+          const dark = appearance === 'dark' || (appearance === 'system' && systemDark);
+          const highlighted = await highlightCodeBlocks(rawHtml, dark);
+          if (renderId === renderIdRef.current) setHtml(highlighted);
+        } catch {
+          if (renderId === renderIdRef.current) setHtml(rawHtml);
+        }
       })();
     }, 200);
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, [activeTab?.content, settings]);
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, [activeTab?.content, settings, appearance, systemDark, theme]);
 
   useEffect(() => {
-    if (!containerRef.current || !activeTab) return;
     const element = containerRef.current;
-    const scrollHeight = element.scrollHeight - element.clientHeight;
-    if (scrollHeight > 0) element.scrollTop = Math.min(activeTab.scrollPosition, scrollHeight);
+    if (!element || !activeTab) return;
+    const max = element.scrollHeight - element.clientHeight;
+    element.scrollTop = Math.min(activeTab.scrollPosition, Math.max(0, max));
   }, [activeTab]);
+
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!element) return;
+    let frame = 0;
+    const onScroll = () => {
+      if (syncingRef.current) return;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        window.dispatchEvent(new CustomEvent<ScrollEventDetail>('freemarkdown:scroll', {
+          detail: { source: 'preview', ratio: scrollRatio(element) },
+        }));
+      });
+    };
+    const onSync = (event: Event) => {
+      const detail = (event as CustomEvent<ScrollEventDetail>).detail;
+      if (detail.source !== 'editor') return;
+      const max = element.scrollHeight - element.clientHeight;
+      syncingRef.current = true;
+      element.scrollTop = detail.ratio * Math.max(0, max);
+      requestAnimationFrame(() => { syncingRef.current = false; });
+    };
+    element.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('freemarkdown:scroll', onSync);
+    return () => {
+      cancelAnimationFrame(frame);
+      element.removeEventListener('scroll', onScroll);
+      window.removeEventListener('freemarkdown:scroll', onSync);
+    };
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -61,16 +113,7 @@ export function PreviewPane() {
 
   return (
     <div ref={containerRef} className="h-full w-full overflow-y-auto bg-[var(--preview-bg)]">
-      <div
-        className="markdown-preview"
-        style={{
-          fontFamily: settings.previewFontFamily,
-          fontSize: `${settings.previewFontSize}px`,
-          lineHeight: settings.previewLineHeight,
-          maxWidth: `${settings.previewMaxWidth}px`,
-        }}
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+      <div className="markdown-preview" style={{ fontFamily: settings.previewFontFamily, fontSize: `${settings.previewFontSize}px`, lineHeight: settings.previewLineHeight, maxWidth: `${settings.previewMaxWidth}px` }} dangerouslySetInnerHTML={{ __html: html }} />
     </div>
   );
 }

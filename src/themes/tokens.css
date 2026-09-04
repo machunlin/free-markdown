@@ -1,18 +1,10 @@
 /* FreeMarkdown Design Tokens */
-/* Loaded before other styles. All UI colors use these variables. */
 
 :root {
-  /* Font families */
-  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
-    "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Helvetica Neue", sans-serif;
-  --font-mono: "SF Mono", "JetBrains Mono", Menlo, Monaco, Consolas,
-    "PingFang SC", "Microsoft YaHei Mono", monospace;
-  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", sans-serif;
-  --font-heading: -apple-system, BlinkMacSystemFont, "SF Pro Display",
-    "PingFang SC", "Helvetica Neue", sans-serif;
-
-  /* Background hierarchy */
+  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Helvetica Neue", sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", Menlo, Monaco, Consolas, "PingFang SC", "Microsoft YaHei Mono", monospace;
+  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", sans-serif;
+  --font-heading: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", sans-serif;
   --bg-base: #ffffff;
   --bg-elevated: #f6f6f6;
   --bg-surface: #ffffff;
@@ -20,39 +12,27 @@
   --bg-active: rgba(0, 0, 0, 0.08);
   --bg-selected: #007aff;
   --bg-selected-text: #ffffff;
-
-  /* Text hierarchy */
   --text-primary: #1d1d1f;
   --text-secondary: #6e6e73;
   --text-tertiary: #aeaeb2;
   --text-inverse: #ffffff;
   --text-link: #0066cc;
-
-  /* Borders */
   --border: #d2d2d7;
   --border-strong: #c7c7cc;
   --separator: rgba(0, 0, 0, 0.1);
-
-  /* Accent */
   --accent: #007aff;
   --accent-hover: #0066dd;
   --accent-active: #0055bb;
-
-  /* Status */
   --success: #34c759;
   --warning: #ff9500;
   --error: #ff3b30;
   --info: #007aff;
-
-  /* Editor */
   --editor-bg: #ffffff;
   --editor-text: #1d1d1f;
   --editor-gutter: #8e8e93;
   --editor-cursor: #007aff;
   --editor-selection: rgba(0, 122, 255, 0.15);
   --editor-current-line: rgba(0, 0, 0, 0.03);
-
-  /* Preview */
   --preview-bg: #ffffff;
   --preview-text: #1d1d1f;
   --preview-code-bg: #f5f5f7;
@@ -60,73 +40,46 @@
   --preview-table-border: #e5e5ea;
 }
 
-/* Theme presets */
 .theme-office { --accent: #007aff; }
 .theme-night {
-  --bg-base: #f7f3ef;
-  --bg-elevated: #eee8e2;
-  --bg-surface: #fffaf5;
-  --text-primary: #302a26;
-  --text-secondary: #766a61;
-  --accent: #9a5f3d;
-  --editor-bg: #fffaf5;
-  --editor-text: #302a26;
-  --preview-bg: #fffaf5;
-  --preview-text: #302a26;
-  --preview-code-bg: #eee8e2;
+  --bg-base: #f7f3ef; --bg-elevated: #eee8e2; --bg-surface: #fffaf5;
+  --text-primary: #302a26; --text-secondary: #766a61; --accent: #9a5f3d;
+  --editor-bg: #fffaf5; --editor-text: #302a26; --preview-bg: #fffaf5;
+  --preview-text: #302a26; --preview-code-bg: #eee8e2;
 }
 .theme-programmer {
-  --bg-base: #f6f8fa;
-  --bg-elevated: #eef1f4;
-  --bg-surface: #ffffff;
-  --text-primary: #24292f;
-  --text-secondary: #57606a;
-  --accent: #0969da;
-  --editor-bg: #f6f8fa;
-  --editor-text: #24292f;
-  --preview-bg: #f6f8fa;
-  --preview-text: #24292f;
-  --preview-code-bg: #eaeef2;
+  --bg-base: #f6f8fa; --bg-elevated: #eef1f4; --bg-surface: #ffffff;
+  --text-primary: #24292f; --text-secondary: #57606a; --accent: #0969da;
+  --editor-bg: #f6f8fa; --editor-text: #24292f; --preview-bg: #f6f8fa;
+  --preview-text: #24292f; --preview-code-bg: #eaeef2;
   --font-mono: "JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, "PingFang SC", "Microsoft YaHei Mono", monospace;
 }
 
 .dark {
-  --bg-base: #1e1e1e;
-  --bg-elevated: #1c1c1e;
-  --bg-surface: #2c2c2e;
-  --bg-hover: rgba(255, 255, 255, 0.06);
-  --bg-active: rgba(255, 255, 255, 0.1);
-  --bg-selected: #0a84ff;
-  --bg-selected-text: #ffffff;
+  --bg-base: #1e1e1e; --bg-elevated: #1c1c1e; --bg-surface: #2c2c2e;
+  --bg-hover: rgba(255, 255, 255, 0.06); --bg-active: rgba(255, 255, 255, 0.1);
+  --bg-selected: #0a84ff; --bg-selected-text: #ffffff;
+  --text-primary: #f5f5f7; --text-secondary: #a1a1a6; --text-tertiary: #6e6e73;
+  --text-link: #409cff; --border: #38383a; --border-strong: #48484a;
+  --separator: rgba(255, 255, 255, 0.1); --accent: #0a84ff; --accent-hover: #409cff;
+  --accent-active: #64b5f6; --success: #30d158; --warning: #ff9f0a;
+  --error: #ff453a; --info: #0a84ff; --editor-bg: #1e1e1e;
+  --editor-text: #f5f5f7; --editor-gutter: #6e6e73; --editor-cursor: #0a84ff;
+  --editor-selection: rgba(10, 132, 255, 0.25); --editor-current-line: rgba(255, 255, 255, 0.04);
+  --preview-bg: #1e1e1e; --preview-text: #f5f5f7; --preview-code-bg: #2c2c2e;
+  --preview-blockquote-border: #48484a; --preview-table-border: #38383a;
+}
 
-  --text-primary: #f5f5f7;
-  --text-secondary: #a1a1a6;
-  --text-tertiary: #6e6e73;
-  --text-link: #409cff;
-
-  --border: #38383a;
-  --border-strong: #48484a;
-  --separator: rgba(255, 255, 255, 0.1);
-
-  --accent: #0a84ff;
-  --accent-hover: #409cff;
-  --accent-active: #64b5f6;
-
-  --success: #30d158;
-  --warning: #ff9f0a;
-  --error: #ff453a;
-  --info: #0a84ff;
-
-  --editor-bg: #1e1e1e;
-  --editor-text: #f5f5f7;
-  --editor-gutter: #6e6e73;
-  --editor-cursor: #0a84ff;
-  --editor-selection: rgba(10, 132, 255, 0.25);
-  --editor-current-line: rgba(255, 255, 255, 0.04);
-
-  --preview-bg: #1e1e1e;
-  --preview-text: #f5f5f7;
-  --preview-code-bg: #2c2c2e;
-  --preview-blockquote-border: #48484a;
-  --preview-table-border: #38383a;
+.dark.theme-office { --accent: #007aff; }
+.dark.theme-night {
+  --bg-base: #1a1a2e; --bg-elevated: #20203a; --bg-surface: #292946;
+  --text-primary: #e8e6e3; --text-secondary: #aaa6a0; --accent: #8ab4f8;
+  --editor-bg: #1a1a2e; --editor-text: #e8e6e3; --preview-bg: #1a1a2e;
+  --preview-text: #e8e6e3; --preview-code-bg: #292946;
+}
+.dark.theme-programmer {
+  --bg-base: #0d1117; --bg-elevated: #161b22; --bg-surface: #161b22;
+  --text-primary: #c9d1d9; --text-secondary: #8b949e; --accent: #58a6ff;
+  --editor-bg: #0d1117; --editor-text: #c9d1d9; --preview-bg: #0d1117;
+  --preview-text: #c9d1d9; --preview-code-bg: #161b22;
 }

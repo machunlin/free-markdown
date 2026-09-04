@@ -15,7 +15,7 @@ V0.1 Alpha ──→ V0.5 Beta ──→ V1.0 ──→ V1.5 ──→ V2.0
 
 **Goal:** A usable Markdown editor for programmers. Source mode + preview + file management + macOS native basics.
 
-**Target date:** After infrastructure setup + initial development
+> Scope details: see `docs/RELEASE_SCOPE.md`. Mermaid is implemented in V0.5; V0.1 displays Mermaid fences as ordinary code. Typora is an interaction reference, not a full WYSIWYG compatibility target.
 
 ### P0 Features
 
@@ -50,7 +50,7 @@ V0.1 Alpha ──→ V0.5 Beta ──→ V1.0 ──→ V1.5 ──→ V2.0
 - File watching / external change detection (V0.5)
 - Export PDF/HTML (V0.5)
 - Search (V0.5)
-- Sidebar with outline/files (V0.5)
+- Sidebar shell only (outline and file explorer are later milestones)
 - WYSIWYG mode (V1.0)
 
 ---
@@ -64,7 +64,7 @@ V0.1 Alpha ──→ V0.5 Beta ──→ V1.0 ──→ V1.5 ──→ V2.0
 | Module | Feature |
 |---|---|
 | M07 | KaTeX math formulas |
-| M07 | Mermaid diagrams |
+| M07 | Mermaid diagrams (V0.5; V0.1 renders fenced Mermaid as ordinary code) |
 | M08 | Extended code language support in Shiki |
 | M11 | Multi-encoding support: GBK, GB18030, Big5, Shift-JIS, EUC-KR with auto-detection |
 | M11 | CJK font fallback and typography |
@@ -72,7 +72,7 @@ V0.1 Alpha ──→ V0.5 Beta ──→ V1.0 ──→ V1.5 ──→ V2.0
 | M13 | Export to PDF (native print dialog) |
 | M13 | Export to HTML |
 | M13 | Copy as HTML / plain text |
-| M12 | Sidebar with Markdown outline (auto-generated TOC) |
+| M12 | Sidebar with Markdown outline (auto-generated heading navigation) |
 | M17 | External file modification detection (file watcher) |
 | M23 | Large file degradation strategy (10MB/50MB thresholds) |
 | M14 | Word/character count in status bar |
@@ -134,7 +134,7 @@ V0.1 Alpha ──→ V0.5 Beta ──→ V1.0 ──→ V1.5 ──→ V2.0
 - Cloud-only service / SaaS model
 - DOCX import/export
 - Note-taking with backlinks/Obsidian-style knowledge graph
-- Full WYSIWYG like Typora (CodeMirror decorations is the chosen approach)
+- Full WYSIWYG parity with Typora; Typora is an interaction reference only (CodeMirror decorations is the chosen approach)
 
 ---
 

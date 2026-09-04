@@ -8,6 +8,7 @@ interface SearchState {
   regex: boolean;
   matchCount: number;
   currentMatch: number;
+  openRequest: number;
 
   open: () => void;
   close: () => void;
@@ -27,8 +28,9 @@ export const useSearchStore = create<SearchState>((set) => ({
   regex: false,
   matchCount: 0,
   currentMatch: 0,
+  openRequest: 0,
 
-  open: () => set({ isOpen: true }),
+  open: () => set((state) => ({ isOpen: true, openRequest: state.openRequest + 1 })),
   close: () => set({ isOpen: false, query: '', replaceWith: '' }),
   setQuery: (query) => set({ query }),
   setReplaceWith: (replaceWith) => set({ replaceWith }),

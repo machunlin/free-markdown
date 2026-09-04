@@ -1,4 +1,7 @@
-# FreeMarkdown 低层设计文档（LLD）
+## Version boundary note
+
+V0.1 delivers source-first editing, GFM preview, Shiki, tabs, UTF-8 files, themes, and native basics. Mermaid/KaTeX and the Markdown heading outline are V0.5; workspace file explorer and inline TOC are V1.0. Typora is an interaction reference, not a parity target.
+
 
 | 字段 | 值 |
 |---|---|

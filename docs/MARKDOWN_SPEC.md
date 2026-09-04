@@ -1,4 +1,11 @@
-# FreeMarkdown Markdown Specification
+## Version boundary
+
+- **V0.1:** CommonMark + GFM. A `mermaid` fenced block is displayed as an ordinary code block; Mermaid is not executed.
+- **V0.5:** Mermaid and KaTeX extensions are enabled on demand.
+- **V0.5:** The sidebar heading outline is navigation UI, independent from inline TOC generation.
+- **V1.0:** Inline TOC generation (`[TOC]`) is introduced; it must not be confused with the sidebar outline.
+
+
 
 > Last updated: 2026-09-03
 
@@ -55,7 +62,7 @@ GFM plus additional extensions useful for technical writing and academic/technic
 | **Special Blocks** | | | | |
 | **Math inline** | ❌ | ❌ | ✅ | `$E = mc^2$` |
 | **Math display** | ❌ | ❌ | ✅ | `$$ E = mc^2 $$` on own paragraph |
-| **Mermaid diagrams** | ❌ | ❌ | ✅ | ```mermaid fenced code blocks |
+| **Mermaid diagrams** | ❌ | ❌ | ✅ | ` ```mermaid ` fenced code blocks; V0.1 displays the fence as ordinary code |
 | **Raw HTML** | ❌ | ❌ | ❌ | **Disabled by default** for security; user can enable in settings |
 
 ## Code Block Languages
@@ -69,7 +76,8 @@ GFM plus additional extensions useful for technical writing and academic/technic
 - Documentation: Markdown, LaTeX, Plain text
 - Config: Dockerfile, Makefile, Nginx, Git
 
-Additional languages can be loaded as needed (Shiki supports many languages).
+- YAML (`yaml`, `yml`) is highlighted by Shiki in V0.1.
+
 
 ## Mermaid Diagram Types
 

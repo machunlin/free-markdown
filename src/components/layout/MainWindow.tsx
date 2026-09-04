@@ -86,6 +86,7 @@ export function MainWindow() {
     else if (mod && event.key === 's') { event.preventDefault(); window.dispatchEvent(new CustomEvent('freemarkdown:save')); }
     else if (mod && event.key === 'o') { event.preventDefault(); window.dispatchEvent(new CustomEvent('freemarkdown:open')); }
     else if (mod && event.key === 'w' && files.activeTabId) { event.preventDefault(); window.dispatchEvent(new CustomEvent('freemarkdown:close', { detail: { tabId: files.activeTabId } })); }
+    else if (mod && event.key === 'f') { event.preventDefault(); if (useEditorStore.getState().mode === 'preview') useEditorStore.getState().setMode('split'); useSearchStore.getState().open(); }
     else if (mod && event.key === '1') { event.preventDefault(); useEditorStore.getState().setMode('source'); }
     else if (mod && event.key === '2') { event.preventDefault(); useEditorStore.getState().setMode('preview'); }
     else if (mod && event.key === '3') { event.preventDefault(); useEditorStore.getState().setMode('split'); }

@@ -1,16 +1,14 @@
+import type { ReactElement } from 'react';
 import { useCallback, useEffect } from 'react';
 import { useFileStore } from '../../stores/fileStore';
 import { useEditorStore } from '../../stores/editorStore';
 import { useThemeStore } from '../../stores/themeStore';
 import { useSearchStore } from '../../stores/searchStore';
 import { openFile, saveFile, showSaveDialog } from '../../core/ipc/commands';
-import type { ReactElement } from 'react';
 import type { AppearanceMode } from '../../types';
 
 const appearanceLabels: Record<AppearanceMode, string> = {
-  system: '跟随系统',
-  light: '浅色外观',
-  dark: '深色外观',
+  system: '跟随系统', light: '浅色外观', dark: '深色外观',
 };
 
 export function Toolbar() {
@@ -24,10 +22,7 @@ export function Toolbar() {
   const handleOpen = useCallback(async () => {
     try {
       const { open } = await import('@tauri-apps/plugin-dialog');
-      const selected = await open({
-        multiple: false,
-        filters: [{ name: 'Markdown', extensions: ['md', 'markdown', 'mkd', 'mdown', 'txt'] }],
-      });
+      const selected = await open({ multiple: false, filters: [{ name: 'Markdown', extensions: ['md', 'markdown', 'mkd', 'mdown', 'txt'] }] });
       if (typeof selected === 'string') {
         const result = await openFile(selected);
         useFileStore.getState().openFile(result.path, result.content, result.encoding);
@@ -42,9 +37,7 @@ export function Toolbar() {
     const tab = store.getActiveTab();
     if (!tab) return;
     try {
-      const path = !forceSaveAs && tab.path
-        ? tab.path
-        : await showSaveDialog({ defaultPath: tab.title });
+      const path = !forceSaveAs && tab.path ? tab.path : await showSaveDialog({ defaultPath: tab.title });
       if (!path) return;
       await saveFile({ path, content: tab.content, encoding: tab.encoding || 'UTF-8' });
       if (path !== tab.path) store.updateTabPath(tab.id, path);
@@ -68,10 +61,14 @@ export function Toolbar() {
     };
   }, [handleOpen, saveCurrentTab]);
 
+  const handleSearch = useCallback(() => {
+    if (mode === 'preview') setMode('split');
+    openSearch();
+  }, [mode, openSearch, setMode]);
+
   const cycleAppearance = useCallback(() => {
     const modes: AppearanceMode[] = ['system', 'light', 'dark'];
-    const index = modes.indexOf(appearance);
-    setAppearance(modes[(index + 1) % modes.length] ?? 'system');
+    setAppearance(modes[(modes.indexOf(appearance) + 1) % modes.length] ?? 'system');
   }, [appearance, setAppearance]);
 
   return (
@@ -90,7 +87,7 @@ export function Toolbar() {
         <ToolbarButton label="分屏模式" shortcut="⌘3" icon="columns" active={mode === 'split'} onClick={() => setMode('split')} />
       </div>
       <div className="flex-1" />
-      <ToolbarButton label="搜索文档" shortcut="⌘F" icon="search" onClick={openSearch} />
+      <ToolbarButton label="搜索文档" shortcut="⌘F" icon="search" onClick={handleSearch} />
       <ToolbarButton label={appearanceLabels[appearance]} shortcut="⌘⌥T" icon={appearance} onClick={cycleAppearance} />
     </div>
   );
@@ -106,12 +103,7 @@ interface ToolbarButtonProps {
 
 function ToolbarButton({ label, shortcut, icon, active, onClick }: ToolbarButtonProps) {
   return (
-    <button
-      aria-label={`${label}（${shortcut}）`}
-      title={`${label}（${shortcut}）`}
-      onClick={onClick}
-      className={`toolbar-btn ${active ? 'toolbar-btn-active' : ''}`}
-    >
+    <button aria-label={`${label}（${shortcut}）`} title={`${label}（${shortcut}）`} onClick={onClick} className={`toolbar-btn ${active ? 'toolbar-btn-active' : ''}`}>
       <ToolbarIcon name={icon} />
       <span className="toolbar-btn-label">{label}</span>
     </button>

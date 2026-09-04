@@ -63,18 +63,16 @@ Button style: 28×28px icon buttons, rounded 5px, hover background. Text labels 
 - Tab tooltip shows full file path on hover
 - Right-click context menu: Close, Close Others, Close Right, Reveal in Finder
 
-## Sidebar (240px width, resizable)
+### Sidebar (V0.1 shell; V0.5 outline; V1.0 workspace)
 
-Toggle with ⌘⇧S. Resizable by dragging the divider. Hidden by default for new users (V0.1 default: visible? Decide during UX testing).
+Toggle with ⌘\\. Resizable by dragging the divider. Hidden by default for new users (V0.1 default: visible? Decide during UX testing).
 
 Sections:
-1. **Quick access** (top): Recent files, Open folder
-2. **Separator**
-3. **Outline** section (header + outline tree, auto-generated from current tab's Markdown headings)
-4. **File explorer** (when a folder is opened, replaces outline or shown in another section)
+1. **Quick access** (V1.0 workspace): Recent files, Open folder
+2. **Outline** (V0.5): header tree auto-generated from current tab Markdown headings
+3. **File explorer** (V1.0): recursive workspace tree and file actions
 
-Style: macOS source list (vibrant/translucent background, SF font, blue selection).
-
+- `Outline` is the V0.5 current-document heading navigation; `File explorer` is the V1.0 workspace directory. They are separate from inline Markdown TOC generation.
 ## Editor Area
 
 ### Source Mode
