@@ -2,13 +2,12 @@
 //!
 //! Uses Tauri 2's builder API: `MenuBuilder`, `SubmenuBuilder`, `PredefinedMenuItem`.
 
-use tauri::menu::{Menu, MenuBuilder, SubmenuBuilder};
+use tauri::menu::{Menu, MenuBuilder, MenuItemBuilder, SubmenuBuilder};
 use tauri::{AppHandle, Wry};
 
 pub fn build_menu(app: &AppHandle) -> Result<Menu<Wry>, tauri::Error> {
     let app_name = app.package_info().name.clone();
 
-    // --- App menu (first submenu on macOS = application menu) ---
     let app_menu = SubmenuBuilder::new(app, app_name.as_str())
         .about(None)
         .separator()
@@ -23,22 +22,34 @@ pub fn build_menu(app: &AppHandle) -> Result<Menu<Wry>, tauri::Error> {
         .quit()
         .build()?;
 
-    // --- File menu ---
     let file_menu = SubmenuBuilder::new(app, "File")
-        .text("file.new", "New")
-        .text("file.open", "Open…")
+        .item(&MenuItemBuilder::with_id("file.new", "New")
+            .accelerator("CmdOrControl+N")
+            .build(app)?)
+        .item(&MenuItemBuilder::with_id("file.open", "Open…")
+            .accelerator("CmdOrControl+O")
+            .build(app)?)
         .text("file.open-recent", "Open Recent")
         .separator()
-        .text("file.save", "Save")
-        .text("file.save-as", "Save As…")
+        .item(&MenuItemBuilder::with_id("file.save", "Save")
+            .accelerator("CmdOrControl+S")
+            .build(app)?)
+        .item(&MenuItemBuilder::with_id("file.save-as", "Save As…")
+            .accelerator("CmdOrControl+Shift+S")
+            .build(app)?)
         .separator()
-        .text("file.close", "Close Tab")
+        .item(&MenuItemBuilder::with_id("file.close", "Close Tab")
+            .accelerator("CmdOrControl+W")
+            .build(app)?)
         .build()?;
 
-    // --- Edit menu ---
     let edit_menu = SubmenuBuilder::new(app, "Edit")
-        .text("edit.undo", "Undo")
-        .text("edit.redo", "Redo")
+        .item(&MenuItemBuilder::with_id("edit.undo", "Undo")
+            .accelerator("CmdOrControl+Z")
+            .build(app)?)
+        .item(&MenuItemBuilder::with_id("edit.redo", "Redo")
+            .accelerator("CmdOrControl+Shift+Z")
+            .build(app)?)
         .separator()
         .cut()
         .copy()
@@ -49,7 +60,6 @@ pub fn build_menu(app: &AppHandle) -> Result<Menu<Wry>, tauri::Error> {
         .text("edit.find-replace", "Find and Replace…")
         .build()?;
 
-    // --- View menu ---
     let view_menu = SubmenuBuilder::new(app, "View")
         .text("view.command-palette", "Command Palette")
         .separator()
@@ -59,12 +69,18 @@ pub fn build_menu(app: &AppHandle) -> Result<Menu<Wry>, tauri::Error> {
         .text("view.focus", "Focus Mode")
         .separator()
         .text("view.toggle-sidebar", "Toggle Sidebar")
-        .text("view.toggle-theme", "Toggle Theme")
+        .separator()
+        .text("view.appearance-system", "Follow System")
+        .text("view.appearance-light", "Light Appearance")
+        .text("view.appearance-dark", "Dark Appearance")
+        .separator()
+        .text("view.theme-office", "Office Theme")
+        .text("view.theme-night", "Night Theme")
+        .text("view.theme-programmer", "Programmer Theme")
         .separator()
         .fullscreen()
         .build()?;
 
-    // --- Window menu ---
     let window_menu = SubmenuBuilder::new(app, "Window")
         .minimize()
         .maximize()
@@ -72,14 +88,11 @@ pub fn build_menu(app: &AppHandle) -> Result<Menu<Wry>, tauri::Error> {
         .show_all()
         .build()?;
 
-    // --- Assemble top-level menu ---
-    let menu = MenuBuilder::new(app)
+    MenuBuilder::new(app)
         .item(&app_menu)
         .item(&file_menu)
         .item(&edit_menu)
         .item(&view_menu)
         .item(&window_menu)
-        .build()?;
-
-    Ok(menu)
+        .build()
 }

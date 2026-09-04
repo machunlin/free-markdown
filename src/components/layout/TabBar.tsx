@@ -26,7 +26,7 @@ export function TabBar() {
   };
 
   return (
-    <div className="flex items-center bg-[var(--bg-elevated)] border-b border-[var(--border)] h-9 flex-shrink-0 overflow-x-auto">
+    <div className="flex items-center bg-[var(--bg-elevated)] border-b border-[var(--border)] h-[38px] flex-shrink-0 overflow-x-auto">
       {tabs.map((tab, index) => (
         <div
           key={tab.id}
@@ -36,7 +36,7 @@ export function TabBar() {
           onDragOver={(event) => handleDragOver(event, index)}
           onDragEnd={() => setDragIdx(null)}
           onClick={() => setActiveTab(tab.id)}
-          className={`flex items-center gap-1.5 px-3 py-1 h-full text-xs cursor-pointer select-none border-r border-[var(--border)] whitespace-nowrap min-w-0 max-w-[200px] ${tab.id === activeTabId ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] border-t-2 border-t-[var(--accent)]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]'}`}
+          className={`flex items-center gap-2 px-3 py-1 h-full text-[13px] cursor-pointer select-none border-r border-[var(--border)] whitespace-nowrap min-w-0 max-w-[200px] ${tab.id === activeTabId ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] border-t-2 border-t-[var(--accent)]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]'}`}
         >
           <span className="truncate flex-1">{tab.isDirty && '● '}{tab.title}</span>
           <button aria-label={`Close ${tab.title}`} onClick={(event) => handleClose(event, tab.id)} className="flex-shrink-0 w-4 h-4 rounded flex items-center justify-center hover:bg-[var(--bg-active)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)]">×</button>

@@ -19,17 +19,44 @@ export function MainWindow() {
   const applyTheme = useThemeStore((state) => state.applyTheme);
 
   useEffect(() => {
-    let unlisten: (() => void) | undefined;
-    void listen<{ payload?: { paths?: string[] }; paths?: string[] }>('tauri://drag-drop', (event) => {
-      const paths = event.payload?.paths ?? event.payload?.paths ?? [];
-      for (const path of paths) {
+    if (useFileStore.getState().tabs.length === 0) useFileStore.getState().ensureWelcomeTab();
+  }, []);
+
+  useEffect(() => {
+    let unlistenMenu: (() => void) | undefined;
+    void listen<{ id: string }>('menu-event', (event) => {
+      const id = event.payload.id;
+      const fileStore = useFileStore.getState();
+      const editorStore = useEditorStore.getState();
+      const themeStore = useThemeStore.getState();
+      if (id === 'file.new') fileStore.createNewTab();
+      else if (id === 'file.save') window.dispatchEvent(new CustomEvent('freemarkdown:save'));
+      else if (id === 'file.close' && fileStore.activeTabId) fileStore.closeTab(fileStore.activeTabId);
+      else if (id === 'view.source') editorStore.setMode('source');
+      else if (id === 'view.preview') editorStore.setMode('preview');
+      else if (id === 'view.split') editorStore.setMode('split');
+      else if (id === 'view.toggle-sidebar') editorStore.toggleSidebar();
+      else if (id === 'view.appearance-system') themeStore.setAppearance('system');
+      else if (id === 'view.appearance-light') themeStore.setAppearance('light');
+      else if (id === 'view.appearance-dark') themeStore.setAppearance('dark');
+      else if (id === 'view.theme-office' || id === 'view.theme-night' || id === 'view.theme-programmer') {
+        themeStore.setTheme(id.replace('view.theme-', '') as 'office' | 'night' | 'programmer');
+      }
+    }).then((dispose) => { unlistenMenu = dispose; });
+    return () => unlistenMenu?.();
+  }, []);
+
+  useEffect(() => {
+    let unlistenDrop: (() => void) | undefined;
+    void listen<{ paths: string[] }>('tauri://drag-drop', (event) => {
+      for (const path of event.payload.paths ?? []) {
         if (!/\.(md|markdown|mkd|mdown|txt)$/i.test(path)) continue;
         void openFile(path).then((file) => {
           useFileStore.getState().openFile(file.path, file.content, file.encoding);
         }).catch((error: unknown) => console.error('Failed to open dropped file:', error));
       }
-    }).then((dispose) => { unlisten = dispose; });
-    return () => unlisten?.();
+    }).then((dispose) => { unlistenDrop = dispose; });
+    return () => unlistenDrop?.();
   }, []);
 
   useEffect(() => {
@@ -53,9 +80,9 @@ export function MainWindow() {
     if (mod && event.altKey && event.key === 't') {
       event.preventDefault();
       const theme = useThemeStore.getState();
-      const names = ['office', 'night', 'programmer'] as const;
-      const index = names.indexOf(theme.current);
-      theme.setTheme(names[(index + 1) % names.length] ?? 'office');
+      const modes = ['system', 'light', 'dark'] as const;
+      const index = modes.indexOf(theme.appearance);
+      theme.setAppearance(modes[(index + 1) % modes.length] ?? 'system');
     }
     if (mod && event.altKey && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
       event.preventDefault();

@@ -6,12 +6,12 @@ export function StatusBar() {
   const activeTab = useFileStore((state) => state.tabs.find((tab) => tab.id === state.activeTabId));
   const mode = useEditorStore((state) => state.mode);
 
-  if (!activeTab) return <div className="flex items-center px-3 py-0.5 h-6 bg-[var(--bg-elevated)] border-t border-[var(--border)] text-[11px] text-[var(--text-tertiary)] flex-shrink-0">No file open</div>;
+  if (!activeTab) return <div className="flex items-center px-3 py-0.5 h-6 bg-[var(--bg-elevated)] border-t border-[var(--border)] text-[12px] text-[var(--text-tertiary)] flex-shrink-0">No file open</div>;
 
   const stats = getDocumentStats(activeTab.content);
   const cursor = activeTab.cursor;
   return (
-    <div className="flex items-center gap-4 px-3 py-0.5 h-6 bg-[var(--bg-elevated)] border-t border-[var(--border)] text-[11px] text-[var(--text-tertiary)] flex-shrink-0">
+    <div className="flex items-center gap-4 px-3 py-0.5 h-7 bg-[var(--bg-elevated)] border-t border-[var(--border)] text-[12px] text-[var(--text-tertiary)] flex-shrink-0">
       <span>Ln {cursor.line + 1}, Col {cursor.column + 1}</span>
       <span>Lines: {stats.lines}</span>
       <span>Words: {stats.words}</span>

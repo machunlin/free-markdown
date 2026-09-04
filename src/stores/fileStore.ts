@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { v4 as uuid } from './uuid';
 import type { Tab } from '../types';
+import { WELCOME_DOCUMENT } from '../content/welcomeDocument';
 
 interface FileState {
   tabs: Tab[];
@@ -21,6 +22,7 @@ interface FileState {
   updateTabScroll: (tabId: string, scrollPosition: number) => void;
   setRecentFiles: (files: string[]) => void;
   getActiveTab: () => Tab | undefined;
+  ensureWelcomeTab: () => string;
 }
 
 const MAX_TABS = 20;
@@ -146,6 +148,19 @@ export const useFileStore = create<FileState>((set, get) => ({
   })),
 
   setRecentFiles: (recentFiles) => set({ recentFiles }),
+  ensureWelcomeTab: () => {
+    const existing = get().tabs.find((tab) => tab.id === 'welcome');
+    if (existing) {
+      set({ activeTabId: existing.id });
+      return existing.id;
+    }
+    const tab: Tab = {
+      ...createTab('welcome', '开始使用', WELCOME_DOCUMENT),
+      id: 'welcome',
+    };
+    set((state) => ({ tabs: [tab, ...state.tabs], activeTabId: tab.id }));
+    return tab.id;
+  },
   getActiveTab: () => {
     const { tabs, activeTabId } = get();
     return tabs.find((tab) => tab.id === activeTabId);

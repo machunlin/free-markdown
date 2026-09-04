@@ -4,9 +4,9 @@
   "version": "0.1.0-alpha",
   "identifier": "dev.freemarkdown.app",
   "build": {
-    "beforeDevCommand": "",
+    "beforeDevCommand": "pnpm dev -- --host 127.0.0.1",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "",
+    "beforeBuildCommand": "pnpm build",
     "frontendDist": "../dist"
   },
   "app": {

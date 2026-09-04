@@ -1,20 +1,32 @@
+import { Icon } from '@iconify/react';
 import { useCallback, useEffect } from 'react';
 import { useFileStore } from '../../stores/fileStore';
 import { useEditorStore } from '../../stores/editorStore';
 import { useThemeStore } from '../../stores/themeStore';
 import { useSearchStore } from '../../stores/searchStore';
 import { openFile, saveFile, showSaveDialog } from '../../core/ipc/commands';
-import type { ThemeName } from '../../types';
+import type { AppearanceMode } from '../../types';
+
+const appearanceLabels: Record<AppearanceMode, string> = {
+  system: '跟随系统',
+  light: '浅色外观',
+  dark: '深色外观',
+};
+
+const appearanceIcons: Record<AppearanceMode, string> = {
+  system: 'ph:desktop',
+  light: 'ph:sun',
+  dark: 'ph:moon',
+};
 
 export function Toolbar() {
   const createNewTab = useFileStore((state) => state.createNewTab);
   const mode = useEditorStore((state) => state.mode);
   const setMode = useEditorStore((state) => state.setMode);
-  const currentTheme = useThemeStore((state) => state.current);
-  const setTheme = useThemeStore((state) => state.setTheme);
+  const appearance = useThemeStore((state) => state.appearance);
+  const setAppearance = useThemeStore((state) => state.setAppearance);
   const openSearch = useSearchStore((state) => state.open);
 
-  const handleNew = useCallback(() => createNewTab(), [createNewTab]);
   const handleOpen = useCallback(async () => {
     try {
       const { open } = await import('@tauri-apps/plugin-dialog');
@@ -36,8 +48,7 @@ export function Toolbar() {
     const tab = store.getActiveTab();
     if (!tab) return;
     try {
-      let path = tab.path;
-      if (!path) path = await showSaveDialog({ defaultPath: tab.title });
+      const path = tab.path ?? await showSaveDialog({ defaultPath: tab.title });
       if (!path) return;
       await saveFile({ path, content: tab.content, encoding: tab.encoding || 'UTF-8' });
       if (path !== tab.path) store.updateTabPath(tab.id, path);
@@ -53,30 +64,52 @@ export function Toolbar() {
     return () => window.removeEventListener('freemarkdown:save', handleSaveEvent);
   }, [handleSave]);
 
-  const cycleTheme = useCallback(() => {
-    const themes: ThemeName[] = ['office', 'night', 'programmer'];
-    const index = themes.indexOf(currentTheme);
-    setTheme(themes[(index + 1) % themes.length] ?? 'office');
-  }, [currentTheme, setTheme]);
-
-  const themeLabel: Record<ThemeName, string> = {
-    office: '☀️', night: '🌙', programmer: '💻',
-  };
+  const cycleAppearance = useCallback(() => {
+    const modes: AppearanceMode[] = ['system', 'light', 'dark'];
+    const index = modes.indexOf(appearance);
+    setAppearance(modes[(index + 1) % modes.length] ?? 'system');
+  }, [appearance, setAppearance]);
 
   return (
-    <div className="flex items-center gap-1 px-2 py-1 bg-[var(--bg-surface)] border-b border-[var(--border)] h-8 flex-shrink-0">
-      <span className="text-sm font-semibold mr-2 text-[var(--accent)]">FM</span>
-      <div className="w-px h-4 bg-[var(--separator)]" />
-      <button aria-label="New file" onClick={handleNew} className="toolbar-btn" title="New (⌘N)">＋</button>
-      <button aria-label="Open file" onClick={handleOpen} className="toolbar-btn" title="Open (⌘O)">⌑</button>
-      <button aria-label="Save file" onClick={() => void handleSave()} className="toolbar-btn" title="Save (⌘S)">▣</button>
-      <div className="w-px h-4 bg-[var(--separator)]" />
-      <button aria-label="Source mode" onClick={() => setMode('source')} className={`toolbar-btn ${mode === 'source' ? 'text-[var(--accent)]' : ''}`} title="Source (⌘1)">≡</button>
-      <button aria-label="Preview mode" onClick={() => setMode('preview')} className={`toolbar-btn ${mode === 'preview' ? 'text-[var(--accent)]' : ''}`} title="Preview (⌘2)">◉</button>
-      <button aria-label="Split mode" onClick={() => setMode('split')} className={`toolbar-btn ${mode === 'split' ? 'text-[var(--accent)]' : ''}`} title="Split (⌘3)">▥</button>
+    <div className="app-toolbar drag-region">
+      <div className="toolbar-brand">FM</div>
+      <div className="toolbar-divider" />
+      <div className="toolbar-group">
+        <ToolbarButton label="新建文件" shortcut="⌘N" icon="ph:file-plus" onClick={() => createNewTab()} />
+        <ToolbarButton label="打开文件" shortcut="⌘O" icon="ph:folder-open" onClick={() => void handleOpen()} />
+        <ToolbarButton label="保存文件" shortcut="⌘S" icon="ph:floppy-disk" onClick={() => void handleSave()} />
+      </div>
+      <div className="toolbar-divider" />
+      <div className="toolbar-group">
+        <ToolbarButton label="源码模式" shortcut="⌘1" icon="ph:code" active={mode === 'source'} onClick={() => setMode('source')} />
+        <ToolbarButton label="预览模式" shortcut="⌘2" icon="ph:eye" active={mode === 'preview'} onClick={() => setMode('preview')} />
+        <ToolbarButton label="分屏模式" shortcut="⌘3" icon="ph:columns" active={mode === 'split'} onClick={() => setMode('split')} />
+      </div>
       <div className="flex-1" />
-      <button aria-label="Search document" onClick={openSearch} className="toolbar-btn" title="Search (⌘F)">⌕</button>
-      <button aria-label="Switch theme" onClick={cycleTheme} className="toolbar-btn text-sm" title="Switch theme (⌘⌥T)">{themeLabel[currentTheme]}</button>
+      <ToolbarButton label="搜索文档" shortcut="⌘F" icon="ph:magnifying-glass" onClick={openSearch} />
+      <ToolbarButton label={appearanceLabels[appearance]} shortcut="⌘⌥T" icon={appearanceIcons[appearance]} onClick={cycleAppearance} />
     </div>
+  );
+}
+
+interface ToolbarButtonProps {
+  label: string;
+  shortcut: string;
+  icon: string;
+  active?: boolean;
+  onClick: () => void;
+}
+
+function ToolbarButton({ label, shortcut, icon, active, onClick }: ToolbarButtonProps) {
+  return (
+    <button
+      aria-label={`${label}（${shortcut}）`}
+      title={`${label}（${shortcut}）`}
+      onClick={onClick}
+      className={`toolbar-btn ${active ? 'toolbar-btn-active' : ''}`}
+    >
+      <Icon icon={icon} width="20" height="20" aria-hidden="true" />
+      <span className="toolbar-btn-label">{label}</span>
+    </button>
   );
 }
