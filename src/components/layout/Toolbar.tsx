@@ -35,7 +35,7 @@ export function Toolbar() {
   const saveCurrentTab = useCallback(async (forceSaveAs = false) => {
     const store = useFileStore.getState();
     const tab = store.getActiveTab();
-    if (!tab) return;
+    if (!tab || tab.id === 'welcome') return;
     try {
       const path = !forceSaveAs && tab.path ? tab.path : await showSaveDialog({ defaultPath: tab.title });
       if (!path) return;

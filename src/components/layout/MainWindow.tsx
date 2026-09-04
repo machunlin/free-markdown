@@ -1,9 +1,10 @@
 import { useCallback, useEffect } from 'react';
 import { listen } from '@tauri-apps/api/event';
-import { openFile } from '../../core/ipc/commands';
+import { openFile, getRecentFiles, setWindowTitle, saveFile } from '../../core/ipc/commands';
 import { useFileStore } from '../../stores/fileStore';
 import { useEditorStore } from '../../stores/editorStore';
 import { useThemeStore } from '../../stores/themeStore';
+import { useSettingsStore } from '../../stores/settingsStore';
 import { useSearchStore } from '../../stores/searchStore';
 import { TabBar } from './TabBar';
 import { Toolbar } from './Toolbar';
@@ -19,9 +20,26 @@ export function MainWindow() {
   const showSidebar = useEditorStore((state) => state.showSidebar);
   const applyTheme = useThemeStore((state) => state.applyTheme);
   const openSearch = useSearchStore((state) => state.open);
+  const autoSave = useSettingsStore((state) => state.settings.autoSave);
+  const autoSaveInterval = useSettingsStore((state) => state.settings.autoSaveInterval);
 
   useEffect(() => {
-    if (useFileStore.getState().tabs.length === 0) useFileStore.getState().ensureWelcomeTab();
+    if (!autoSave || !activeTab?.path || !activeTab.isDirty || activeTab.id === 'welcome') return;
+    const timer = window.setTimeout(() => {
+      void saveFile({ path: activeTab.path!, content: activeTab.content, encoding: activeTab.encoding || 'UTF-8' })
+        .then(() => useFileStore.getState().markTabClean(activeTab.id, activeTab.content))
+        .catch((error: unknown) => console.error('Auto-save failed:', error));
+    }, autoSaveInterval);
+    return () => window.clearTimeout(timer);
+  }, [activeTab, autoSave, autoSaveInterval]);
+  useEffect(() => {
+    if (activeTab) {
+      void setWindowTitle(`${activeTab.title}${activeTab.isDirty ? ' •' : ''} — FreeMarkdown`).catch(() => {});
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    void getRecentFiles().then((files) => useFileStore.getState().setRecentFiles(files)).catch(() => {});
   }, []);
 
   useEffect(() => {
