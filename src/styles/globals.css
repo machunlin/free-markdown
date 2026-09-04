@@ -1,0 +1,290 @@
+/* Theme tokens — MUST be first because @import must precede other statements */
+@import '../themes/tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: var(--font-ui, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 13px;
+  color: var(--text-primary, #1d1d1f);
+  background: var(--bg-base, #fff);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tauri drag region */
+.drag-region {
+  -webkit-app-region: drag;
+}
+.drag-region * {
+  -webkit-app-region: no-drag;
+}
+
+/* Remove default focus ring, add custom */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--accent, #007aff);
+  outline-offset: 2px;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+/* Scrollbar styling (macOS-like) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Markdown preview base styles (will be expanded) */
+.markdown-preview {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--preview-text);
+  padding: 40px 48px;
+  max-width: 740px;
+  margin: 0 auto;
+}
+
+/* CodeMirror base */
+.cm-editor {
+  height: 100%;
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+.cm-editor .cm-content {
+  padding: 16px 20px;
+  line-height: 1.6;
+}
+
+/* Reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Toolbar button */
+.toolbar-btn {
+  @apply w-7 h-6 flex items-center justify-center rounded text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)] transition-colors;
+}
+
+/* ===== Markdown Preview Styles ===== */
+.markdown-preview h1 {
+  font-size: 2em;
+  font-weight: 700;
+  margin: 0.67em 0 0.5em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--preview-table-border);
+  color: var(--preview-text);
+}
+.markdown-preview h2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin: 0.75em 0 0.5em;
+  padding-bottom: 0.25em;
+  border-bottom: 1px solid var(--preview-table-border);
+  color: var(--preview-text);
+}
+.markdown-preview h3 {
+  font-size: 1.25em;
+  font-weight: 600;
+  margin: 0.6em 0 0.4em;
+  color: var(--preview-text);
+}
+.markdown-preview h4 { font-size: 1.1em; font-weight: 600; margin: 0.5em 0 0.3em; }
+.markdown-preview h5 { font-size: 1em; font-weight: 600; margin: 0.5em 0 0.3em; }
+.markdown-preview h6 { font-size: 0.9em; font-weight: 600; margin: 0.5em 0 0.3em; color: var(--text-secondary); }
+
+.markdown-preview p {
+  margin: 0.5em 0;
+}
+
+.markdown-preview a {
+  color: var(--text-link);
+  text-decoration: none;
+}
+.markdown-preview a:hover {
+  text-decoration: underline;
+}
+
+.markdown-preview strong { font-weight: 600; }
+.markdown-preview em { font-style: italic; }
+.markdown-preview del { text-decoration: line-through; opacity: 0.6; }
+.markdown-preview mark { background: rgba(255, 213, 0, 0.3); padding: 0 2px; border-radius: 2px; }
+
+.markdown-preview code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--preview-code-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--preview-text);
+}
+.markdown-preview pre {
+  position: relative;
+  background: var(--preview-code-bg);
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  margin: 0.75em 0;
+}
+.markdown-preview pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+
+.markdown-preview .code-copy-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.markdown-preview .code-copy-button:hover {
+  color: var(--text-primary);
+  border-color: var(--accent);
+}
+
+.markdown-preview blockquote {
+  border-left: 3px solid var(--preview-blockquote-border);
+  padding: 0.5em 1em;
+  margin: 0.75em 0;
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+  border-radius: 0 4px 4px 0;
+}
+
+.markdown-preview ul, .markdown-preview ol {
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+.markdown-preview li {
+  margin: 0.25em 0;
+}
+.markdown-preview li > p {
+  margin: 0;
+}
+
+.markdown-preview table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.75em 0;
+  font-size: 0.9em;
+}
+.markdown-preview th, .markdown-preview td {
+  border: 1px solid var(--preview-table-border);
+  padding: 8px 12px;
+  text-align: left;
+}
+.markdown-preview th {
+  background: var(--bg-elevated);
+  font-weight: 600;
+}
+.markdown-preview tr:nth-child(even) {
+  background: var(--bg-elevated);
+}
+
+.markdown-preview hr {
+  border: none;
+  border-top: 1px solid var(--preview-table-border);
+  margin: 1.5em 0;
+}
+
+.markdown-preview img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin: 0.5em 0;
+}
+
+.markdown-preview .task-list-item {
+  list-style: none;
+  margin-left: -1.5em;
+}
+.markdown-preview .task-list-item input[type="checkbox"] {
+  margin-right: 0.5em;
+  accent-color: var(--accent);
+}
+
+.markdown-preview .footnote-ref {
+  font-size: 0.75em;
+  vertical-align: super;
+  color: var(--accent);
+}
+
+.markdown-preview .markdown-toc {
+  background: var(--bg-elevated);
+  border: 1px solid var(--preview-table-border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 1em 0;
+}
+.markdown-preview .markdown-toc ul {
+  list-style: none;
+  padding-left: 0;
+}
+.markdown-preview .markdown-toc li {
+  margin: 4px 0;
+}
+.markdown-preview .markdown-toc a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+.markdown-preview .markdown-toc a:hover {
+  color: var(--accent);
+}
+
+/* KaTeX math */
+.markdown-preview .katex {
+  font-size: 1.1em;
+}
+
+/* Mermaid diagrams */
+.markdown-preview .mermaid {
+  text-align: center;
+  margin: 1em 0;
+}

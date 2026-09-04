@@ -1,0 +1,41 @@
+[package]
+name = "freemarkdown"
+version = "0.1.0-alpha"
+description = "Native macOS Markdown editor — free, open source, multi-encoding, CJK-friendly"
+authors = ["FreeMarkdown contributors"]
+license = "MIT"
+repository = "https://github.com/free-markdown/free-markdown"
+edition = "2021"
+rust-version = "1.77"
+
+[lib]
+name = "freemarkdown_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+chardetng = "0.1"
+encoding_rs = "0.8"
+notify = { version = "8", features = ["macos_kqueue"] }
+tokio = { version = "1", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+url = "2"
+open = "5"
+anyhow = "1"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

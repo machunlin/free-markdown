@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /Users/chunlin/Documents/workspace_github/free-markdown status --short --branch)",
+      "Bash(git -C /Users/chunlin/Documents/workspace_github/free-markdown log -5 --oneline)"
+    ]
+  }
+}

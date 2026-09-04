@@ -1,0 +1,10 @@
+{
+  "name": "FreeMarkdown",
+  "version": "0.1.0-alpha",
+  "description": "Native macOS Markdown editor",
+  "authors": ["FreeMarkdown contributors"],
+  "license": "MIT",
+  "repository": "free-markdown/free-markdown",
+  "edition": "2021",
+  "rust-version": "1.77"
+}

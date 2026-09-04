@@ -1,0 +1,65 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+*.local
+.vite/
+
+# Tauri
+src-tauri/target/
+src-tauri/gen/
+src-tauri/Cargo.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Coverage
+coverage/
+
+# Misc
+*.tsbuildinfo
+.pnpm-store/v11/index.db
+.pnpm-store/v11/files/28/76f9af7ad2f244c7bf9e80ff9f0c13a26a2e9a967717ce0581d4e6714eaf128568d69a1cf765ad887a6045f69c65ca09492103147aa0f97603bb54871aae44
+.pnpm-store/v11/files/2c/a66212026bc25f68dd3e61a71b818d71b0df45bd9ac60b34e7e6f149b6693705e5c578a9b6c827a1ff4c98d043e0b33102b9e0dd51a50871816781fcecbc19
+.pnpm-store/v11/files/51/ea859b7435fa1f463c7e1f15b99f4f4055846f9f179cf6e04a5395926113dab52f00fab833f6c6fd3a9f3cdd6d2edfea92fa1c69af17c7b413f9a324d30ef3
+.pnpm-store/v11/files/57/a3e69a69f5a041ff3b17cbb3c0fd19f1c385ef2aeff4b92945c9ff9b3df13332c894573986078e53a96153c217567862223dd0db2523c4922c7cbdc1e709d8
+.pnpm-store/v11/files/68/b1acafbf3762fde7b18ec00b82e468ec0cae614dd38a06e0867d20921c15bdc7205f3d7419b647cec80eb6bbdec33a33d7906482751e5adc84c9b2fc155f8d
+.pnpm-store/v11/files/71/32e3bdd199561ff6e8d4900c757ce1df126dea3fa0ad822cec1eb54c08fdc573e7ddf4e350e18cd98a172ebc911c3764bee648612310ddd1875907199520f6
+.pnpm-store/v11/files/77/c9c52835cb3a3adfbd7db2b0e30c1fbd2599de89ceb2423140ed4ab96a44436bef072120003da3584c5fa8b5c46fb5017ebe3767db1aa00a925c278f1f30c4
+.pnpm-store/v11/files/9a/eb54b54fc1dd2ffcf3d27115df0f952a64dbd3a9f8f733a22e78abfebfd7f478d58ab6333a19372171858b0004b26c371dc972978f000934ac31268bbc0ac6-exec
+.pnpm-store/v11/files/a1/0f65af71851afe779d8925e00d5680176c60b76a00182580b4f5e6ed8a1f71b21819134f401ad5aa44ca290269693c28e1117bd4874fc7fb8557b301f900c7
+.pnpm-store/v11/files/b6/2e1e662e7f1497ba6089c37cf793b526e8a82ff0875cbb59dd0881e78be320d9e3a15384860656deb4ddd5eadf0a9a0b80f7127079b7f042458fae5b4d9d25-exec
+.pnpm-store/v11/files/e5/28e4a6ecbd99e936f8c52795369bbf6fb44c5e63300e5848e23c4a91982f7d14ca4e28f70661a8cdda48374f6ef63fab1f0d4d09063fb20c8efc9207a3b2de
+.pnpm-store/v11/files/ea/35b9ba952d4e2df33ceb090c3bda0d3fd8479b9c73850ec9453c686402985701b92e32dda371fc6a91aafdf5a1780b4e652379b753d8d92173c2be79129e6c
+_tmp_3_2e5f790c52023ca86d82c7e1b92546e1
+_tmp_3_3caf2952402f0d47d9b996999476a78f
+_tmp_3_349450ed7fc73ab200f07737586a546c
+_tmp_3_ac38b5febfe080c2713bc6273cf74222
+_tmp_4_7fd2a502f8035c462ed2260bcee21e57
+_tmp_4_c032ba67b8b86fd1c758c185e4bad445
+_tmp_16_62b88a28ca89f54baa7e36a3c3d3cfb4
+_tmp_16_faea4c5394e7fec8b476643f96113d0d
+_tmp_81_43317a1df0209df499c6d4897a21194f
+_tmp_81_bcf1e0beca6400ad5e042799837a8af6
