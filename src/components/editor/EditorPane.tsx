@@ -15,6 +15,7 @@ export function EditorPane() {
   const updateTabContent = useFileStore((state) => state.updateTabContent);
   const updateTabCursor = useFileStore((state) => state.updateTabCursor);
   const updateTabScroll = useFileStore((state) => state.updateTabScroll);
+  const appearance = useThemeStore((state) => state.appearance);
   const theme = useThemeStore((state) => state.current);
   const fontSize = useEditorStore((state) => state.fontSize);
   const fontFamily = useEditorStore((state) => state.fontFamily);
@@ -28,7 +29,7 @@ export function EditorPane() {
     const editor = new EditorCore({
       parent,
       initialValue: activeTab?.content ?? '',
-      dark: theme === 'night' || theme === 'programmer',
+      dark: appearance === 'dark' || (appearance === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches),
       fontSize,
       fontFamily,
       lineNumbers: showLineNumbers,
@@ -76,10 +77,9 @@ export function EditorPane() {
 
   useEffect(() => {
     const editor = editorRef.current;
-    if (editor && activeTab && editor.getValue() !== activeTab.content) {
-      editor.setValue(activeTab.content);
-    }
-  }, [activeTab?.content, activeTab]);
+    if (!editor) return;
+    editor.setDark(appearance === 'dark' || (appearance === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches));
+  }, [appearance, theme]);
 
   return <div ref={containerRef} className="h-full w-full overflow-hidden bg-[var(--editor-bg)]" />;
 }

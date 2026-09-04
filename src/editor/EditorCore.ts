@@ -1,5 +1,5 @@
 import { EditorView, keymap, placeholder, drawSelection, highlightActiveLine, lineNumbers, highlightActiveLineGutter } from '@codemirror/view';
-import { EditorState, type Extension } from '@codemirror/state';
+import { Compartment, EditorState, type Extension } from '@codemirror/state';
 import { defaultKeymap, history, historyKeymap, indentWithTab, redo, undo } from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language';
@@ -30,6 +30,7 @@ export class EditorCore {
   private onCursorChange?: (line: number, column: number) => void;
   private onScroll?: (scrollTop: number) => void;
   private suppressUpdates = false;
+  private readonly themeCompartment = new Compartment();
 
   constructor(options: EditorCoreOptions) {
     this.onUpdate = options.onUpdate;
@@ -56,7 +57,7 @@ export class EditorCore {
         if (!this.suppressUpdates) this.onScroll?.(scrollTop);
       }),
       freeMarkdownKeymap,
-      options.dark ? oneDark : [],
+      this.themeCompartment.of(options.dark ? oneDark : []),
     ];
 
     if (options.lineNumbers !== false) {
@@ -123,4 +124,10 @@ export class EditorCore {
 
   undo(): boolean { return undo(this.view); }
   redo(): boolean { return redo(this.view); }
+
+  setDark(dark: boolean): void {
+    this.view.dispatch({
+      effects: this.themeCompartment.reconfigure(dark ? oneDark : []),
+    });
+  }
 }

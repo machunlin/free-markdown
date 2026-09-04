@@ -88,13 +88,12 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
 
   applyTheme: () => {
     const { current, appearance, customTheme } = get();
-    const vars = customTheme ?? BUILTIN_THEMES[current];
     const root = document.documentElement;
-    Object.entries(vars).forEach(([key, value]) => {
-      root.style.setProperty(key, value);
-    });
     const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const isDark = appearance === 'dark' || (appearance === 'system' && systemDark);
-    root.classList.toggle('dark', isDark);
+    const dark = appearance === 'dark' || (appearance === 'system' && systemDark);
+    const vars = customTheme ?? (dark ? BUILTIN_THEMES[current] : BUILTIN_THEMES.office);
+    root.classList.toggle('dark', dark);
+    Object.keys(BUILTIN_THEMES.office).forEach((key) => root.style.removeProperty(key));
+    Object.entries(vars).forEach(([key, value]) => root.style.setProperty(key, value));
   },
 }));
