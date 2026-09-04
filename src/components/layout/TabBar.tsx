@@ -1,5 +1,6 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFileStore } from '../../stores/fileStore';
+
 export function TabBar() {
   const tabs = useFileStore((state) => state.tabs);
   const activeTabId = useFileStore((state) => state.activeTabId);
@@ -9,13 +10,26 @@ export function TabBar() {
   const [dragIdx, setDragIdx] = useState<number | null>(null);
   const tabRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const handleClose = useCallback((event: React.MouseEvent, tabId: string) => {
-    event.stopPropagation();
-    const tab = tabs.find((item) => item.id === tabId);
+  const closeRequested = useCallback((tabId: string) => {
+    const tab = useFileStore.getState().tabs.find((item) => item.id === tabId);
     if (!tab?.isDirty || window.confirm(`"${tab.title}" has unsaved changes. Close anyway?`)) {
       closeTab(tabId);
     }
-  }, [tabs, closeTab]);
+  }, [closeTab]);
+
+  useEffect(() => {
+    const handleCloseEvent = (event: Event) => {
+      const tabId = (event as CustomEvent<{ tabId?: string }>).detail?.tabId;
+      if (tabId) closeRequested(tabId);
+    };
+    window.addEventListener('freemarkdown:close', handleCloseEvent);
+    return () => window.removeEventListener('freemarkdown:close', handleCloseEvent);
+  }, [closeRequested]);
+
+  const handleClose = useCallback((event: React.MouseEvent, tabId: string) => {
+    event.stopPropagation();
+    closeRequested(tabId);
+  }, [closeRequested]);
 
   const handleDragOver = (event: React.DragEvent, index: number) => {
     event.preventDefault();

@@ -1,6 +1,6 @@
 export const WELCOME_DOCUMENT = `# 欢迎使用 FreeMarkdown
 
-FreeMarkdown 是一款面向中文技术用户的原生 macOS Markdown 编辑器。
+FreeMarkdown 是一款面向技术用户的原生 macOS Markdown 编辑器。
 
 ## 快速开始
 

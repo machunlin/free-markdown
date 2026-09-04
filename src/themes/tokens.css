@@ -62,9 +62,33 @@
 
 /* Theme presets */
 .theme-office { --accent: #007aff; }
-.theme-night { --accent: #0a84ff; }
-.theme-programmer { --accent: #58a6ff; --font-mono: "JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, "PingFang SC", "Microsoft YaHei Mono", monospace; }
-
+.theme-night {
+  --bg-base: #f7f3ef;
+  --bg-elevated: #eee8e2;
+  --bg-surface: #fffaf5;
+  --text-primary: #302a26;
+  --text-secondary: #766a61;
+  --accent: #9a5f3d;
+  --editor-bg: #fffaf5;
+  --editor-text: #302a26;
+  --preview-bg: #fffaf5;
+  --preview-text: #302a26;
+  --preview-code-bg: #eee8e2;
+}
+.theme-programmer {
+  --bg-base: #f6f8fa;
+  --bg-elevated: #eef1f4;
+  --bg-surface: #ffffff;
+  --text-primary: #24292f;
+  --text-secondary: #57606a;
+  --accent: #0969da;
+  --editor-bg: #f6f8fa;
+  --editor-text: #24292f;
+  --preview-bg: #f6f8fa;
+  --preview-text: #24292f;
+  --preview-code-bg: #eaeef2;
+  --font-mono: "JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, "PingFang SC", "Microsoft YaHei Mono", monospace;
+}
 
 .dark {
   --bg-base: #1e1e1e;
