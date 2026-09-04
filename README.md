@@ -4,7 +4,7 @@
 
 ## About
 
-FreeMarkdown is a modern Markdown editor for macOS designed for Chinese technical users (programmers, product managers, technical writers). Built with Tauri 2 and React, it combines native macOS performance with a polished editing experience.
+FreeMarkdown is a modern Markdown editor for macOS designed for technical users (programmers, product managers, technical writers). Built with Tauri 2 and React, it combines native macOS performance with a polished editing experience.
 
 **Status:** Early development (V0.1 Alpha in progress)
 

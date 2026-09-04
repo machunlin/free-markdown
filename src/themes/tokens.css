@@ -60,7 +60,12 @@
   --preview-table-border: #e5e5ea;
 }
 
-/* Dark mode */
+/* Theme presets */
+.theme-office { --accent: #007aff; }
+.theme-night { --accent: #0a84ff; }
+.theme-programmer { --accent: #58a6ff; --font-mono: "JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, "PingFang SC", "Microsoft YaHei Mono", monospace; }
+
+
 .dark {
   --bg-base: #1e1e1e;
   --bg-elevated: #1c1c1e;

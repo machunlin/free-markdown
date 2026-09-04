@@ -23,6 +23,7 @@ export function MainWindow() {
   }, []);
 
   useEffect(() => {
+    let disposed = false;
     let unlistenMenu: (() => void) | undefined;
     void listen<{ id: string }>('menu-event', (event) => {
       const id = event.payload.id;
@@ -31,7 +32,7 @@ export function MainWindow() {
       const themeStore = useThemeStore.getState();
       if (id === 'file.new') fileStore.createNewTab();
       else if (id === 'file.save') window.dispatchEvent(new CustomEvent('freemarkdown:save'));
-      else if (id === 'file.close' && fileStore.activeTabId) fileStore.closeTab(fileStore.activeTabId);
+      else if (id === 'file.open') window.dispatchEvent(new CustomEvent('freemarkdown:open'));
       else if (id === 'view.source') editorStore.setMode('source');
       else if (id === 'view.preview') editorStore.setMode('preview');
       else if (id === 'view.split') editorStore.setMode('split');
@@ -42,11 +43,18 @@ export function MainWindow() {
       else if (id === 'view.theme-office' || id === 'view.theme-night' || id === 'view.theme-programmer') {
         themeStore.setTheme(id.replace('view.theme-', '') as 'office' | 'night' | 'programmer');
       }
-    }).then((dispose) => { unlistenMenu = dispose; });
-    return () => unlistenMenu?.();
+    }).then((dispose) => {
+      if (disposed) dispose();
+      else unlistenMenu = dispose;
+    });
+    return () => {
+      disposed = true;
+      unlistenMenu?.();
+    };
   }, []);
 
   useEffect(() => {
+    let disposed = false;
     let unlistenDrop: (() => void) | undefined;
     void listen<{ paths: string[] }>('tauri://drag-drop', (event) => {
       for (const path of event.payload.paths ?? []) {
@@ -55,8 +63,14 @@ export function MainWindow() {
           useFileStore.getState().openFile(file.path, file.content, file.encoding);
         }).catch((error: unknown) => console.error('Failed to open dropped file:', error));
       }
-    }).then((dispose) => { unlistenDrop = dispose; });
-    return () => unlistenDrop?.();
+    }).then((dispose) => {
+      if (disposed) dispose();
+      else unlistenDrop = dispose;
+    });
+    return () => {
+      disposed = true;
+      unlistenDrop?.();
+    };
   }, []);
 
   useEffect(() => {

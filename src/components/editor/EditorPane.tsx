@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { EditorState } from '@codemirror/state';
 import { useFileStore } from '../../stores/fileStore';
 import { useEditorStore } from '../../stores/editorStore';
@@ -21,6 +21,14 @@ export function EditorPane() {
   const fontFamily = useEditorStore((state) => state.fontFamily);
   const showLineNumbers = useEditorStore((state) => state.showLineNumbers);
   const wordWrap = useEditorStore((state) => state.wordWrap);
+  const [systemDark, setSystemDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = () => setSystemDark(media.matches);
+    media.addEventListener('change', handleChange);
+    return () => media.removeEventListener('change', handleChange);
+  }, []);
 
   useEffect(() => {
     const parent = containerRef.current;
@@ -29,7 +37,7 @@ export function EditorPane() {
     const editor = new EditorCore({
       parent,
       initialValue: activeTab?.content ?? '',
-      dark: appearance === 'dark' || (appearance === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches),
+      dark: appearance === 'dark' || (appearance === 'system' && systemDark),
       fontSize,
       fontFamily,
       lineNumbers: showLineNumbers,
@@ -63,7 +71,6 @@ export function EditorPane() {
   useEffect(() => {
     const editor = editorRef.current;
     if (!editor || !activeTabId || !activeTab || currentIdRef.current === activeTabId) return;
-
     if (currentIdRef.current) statesRef.current.set(currentIdRef.current, editor.getState());
     const savedState = statesRef.current.get(activeTabId);
     if (savedState) {
@@ -77,9 +84,16 @@ export function EditorPane() {
 
   useEffect(() => {
     const editor = editorRef.current;
+    if (editor && activeTab && editor.getValue() !== activeTab.content) {
+      editor.setValue(activeTab.content);
+    }
+  }, [activeTab?.content, activeTab]);
+
+  useEffect(() => {
+    const editor = editorRef.current;
     if (!editor) return;
-    editor.setDark(appearance === 'dark' || (appearance === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches));
-  }, [appearance, theme]);
+    editor.setDark(appearance === 'dark' || (appearance === 'system' && systemDark));
+  }, [appearance, theme, systemDark]);
 
   return <div ref={containerRef} className="h-full w-full overflow-hidden bg-[var(--editor-bg)]" />;
 }

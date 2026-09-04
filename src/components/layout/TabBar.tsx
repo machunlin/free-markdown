@@ -1,6 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
 import { useFileStore } from '../../stores/fileStore';
-
 export function TabBar() {
   const tabs = useFileStore((state) => state.tabs);
   const activeTabId = useFileStore((state) => state.activeTabId);

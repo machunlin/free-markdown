@@ -60,9 +60,14 @@ export function Toolbar() {
 
   useEffect(() => {
     const handleSaveEvent = () => { void handleSave(); };
+    const handleOpenEvent = () => { void handleOpen(); };
     window.addEventListener('freemarkdown:save', handleSaveEvent);
-    return () => window.removeEventListener('freemarkdown:save', handleSaveEvent);
-  }, [handleSave]);
+    window.addEventListener('freemarkdown:open', handleOpenEvent);
+    return () => {
+      window.removeEventListener('freemarkdown:save', handleSaveEvent);
+      window.removeEventListener('freemarkdown:open', handleOpenEvent);
+    };
+  }, [handleOpen, handleSave]);
 
   const cycleAppearance = useCallback(() => {
     const modes: AppearanceMode[] = ['system', 'light', 'dark'];
